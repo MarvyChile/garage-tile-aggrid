@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -28,23 +27,21 @@ if "df" not in st.session_state or st.session_state.df.shape != (rows, cols):
     )
 df = st.session_state.df
 
-# 3. Definir colores y cellStyle en JS
+# 3. Definir colores y estilo de celda en JS
 colores = {
     "Blanco":"#FFFFFF","Negro":"#000000","Gris":"#B0B0B0","Gris Oscuro":"#4F4F4F",
     "Azul":"#0070C0","Celeste":"#00B0F0","Amarillo":"#FFFF00","Verde":"#00B050","Rojo":"#FF0000"
 }
-lista_colores = list(colores.keys())
-
 cellstyle_jscode = JsCode('''
 function(params) {
-    var colorMap = {
-        'Blanco':'#FFFFFF','Negro':'#000000','Gris':'#B0B0B0','Gris Oscuro':'#4F4F4F',
-        'Azul':'#0070C0','Celeste':'#00B0F0','Amarillo':'#FFFF00','Verde':'#00B050','Rojo':'#FF0000'
-    };
-    return {
-        'backgroundColor': colorMap[params.value] || '#FFFFFF',
-        'color': params.value=='Negro' ? 'white' : 'black'
-    };
+  var m = {
+    'Blanco':'#FFFFFF','Negro':'#000000','Gris':'#B0B0B0','Gris Oscuro':'#4F4F4F',
+    'Azul':'#0070C0','Celeste':'#00B0F0','Amarillo':'#FFFF00','Verde':'#00B050','Rojo':'#FF0000'
+  };
+  return {
+    'backgroundColor': m[params.value] || '#FFFFFF',
+    'color': params.value=='Negro' ? 'white' : 'black'
+  };
 }
 ''')
 
@@ -61,7 +58,7 @@ grid_response = AgGrid(
     update_mode=GridUpdateMode.VALUE_CHANGED,
     data_return_mode=DataReturnMode.AS_INPUT,
     fit_columns_on_grid_load=True,
-    enable_enterprise_modules=False,
+    allow_unsafe_jscode=True  # Permitir el JS styling
 )
 st.session_state.df = pd.DataFrame(grid_response["data"])
 df = st.session_state.df
